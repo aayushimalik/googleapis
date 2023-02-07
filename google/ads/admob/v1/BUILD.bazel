@@ -71,10 +71,11 @@ java_gapic_library(
     ],
     gapic_yaml = "admob_gapic.yaml",
     grpc_service_config = "//google/ads/admob:admob_grpc_service_config.json",
-    transport = "rest",
+    rest_numeric_enums = True,
     test_deps = [
         ":admob_java_grpc",
     ],
+    transport = "rest",
     deps = [
         ":admob_java_proto",
     ],
@@ -127,7 +128,9 @@ go_gapic_library(
     srcs = [":admob_proto_with_info"],
     grpc_service_config = None,
     importpath = "google.golang.org/google/ads/admob/v1;admob",
+    rest_numeric_enums = True,
     service_yaml = "//google/ads/admob:admob_v1.yaml",
+    transport = "rest",
     deps = [
         ":admob_go_proto",
     ],
@@ -159,6 +162,7 @@ load(
     "py_gapic_library",
     "py_grpc_library",
     "py_proto_library",
+    "py_test",
 )
 
 py_proto_library(
@@ -177,6 +181,18 @@ py_gapic_library(
     srcs = [
         ":admob_proto_with_info",
     ],
+    rest_numeric_enums = True,
+    transport = "rest",
+)
+
+py_test(
+    name = "admob_py_gapic_test",
+    srcs = [
+        "admob_py_gapic_pytest.py",
+        "admob_py_gapic_test.py",
+    ],
+    legacy_create_init = False,
+    deps = [":admob_py_gapic"],
 )
 
 # Open Source Packages
@@ -216,7 +232,9 @@ php_gapic_library(
     srcs = [":admob_proto"],
     gapic_yaml = "admob_gapic.yaml",
     grpc_service_config = None,
+    rest_numeric_enums = True,
     service_yaml = "//google/ads/admob:admob_v1.yaml",
+    transport = "rest",
     deps = [
         ":admob_php_grpc",
         ":admob_php_proto",
@@ -248,7 +266,9 @@ nodejs_gapic_library(
     extra_protoc_parameters = ["metadata"],
     grpc_service_config = None,
     package = "google.ads.admob.v1",
+    rest_numeric_enums = True,
     service_yaml = "//google/ads/admob:admob_v1.yaml",
+    transport = "rest",
     deps = [],
 )
 
@@ -287,6 +307,7 @@ ruby_cloud_gapic_library(
     srcs = [":admob_proto_with_info"],
     extra_protoc_parameters = ["ruby-cloud-gem-name=google-cloud-admob-v1"],
     grpc_service_config = None,
+    rest_numeric_enums = True,
     deps = [
         ":admob_ruby_grpc",
         ":admob_ruby_proto",
@@ -329,10 +350,12 @@ csharp_gapic_library(
     name = "admob_csharp_gapic",
     srcs = [":admob_proto_with_info"],
     common_resources_config = "@gax_dotnet//:Google.Api.Gax/ResourceNames/CommonResourcesConfig.json",
+    rest_numeric_enums = True,
     deps = [
         ":admob_csharp_grpc",
         ":admob_csharp_proto",
     ],
+    transport = "rest",
 )
 
 # Open Source Packages

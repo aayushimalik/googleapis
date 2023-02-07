@@ -17,7 +17,7 @@ syntax = "proto3";
 package google.cloud.securitycenter.v1;
 
 option csharp_namespace = "Google.Cloud.SecurityCenter.V1";
-option go_package = "google.golang.org/genproto/googleapis/cloud/securitycenter/v1;securitycenter";
+option go_package = "cloud.google.com/go/securitycenter/apiv1/securitycenterpb;securitycenterpb";
 option java_multiple_files = true;
 option java_outer_classname = "FileProto";
 option java_package = "com.google.cloud.securitycenter.v1";
@@ -34,7 +34,7 @@ message File {
   int64 size = 2;
 
   // SHA256 hash of the first hashed_size bytes of the file encoded as a
-  // hex string.  If hashed_size == size, hash_sha256 represents the SHA256 hash
+  // hex string.  If hashed_size == size, sha256 represents the SHA256 hash
   // of the entire file.
   string sha256 = 3;
 

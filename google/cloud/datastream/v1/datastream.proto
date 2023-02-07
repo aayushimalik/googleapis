@@ -26,7 +26,7 @@ import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
 
 option csharp_namespace = "Google.Cloud.Datastream.V1";
-option go_package = "google.golang.org/genproto/googleapis/cloud/datastream/v1;datastream";
+option go_package = "cloud.google.com/go/datastream/apiv1/datastreampb;datastreampb";
 option java_multiple_files = true;
 option java_outer_classname = "DatastreamProto";
 option java_package = "com.google.cloud.datastream.v1";
@@ -332,6 +332,9 @@ message DiscoverConnectionProfileRequest {
 
     // MySQL RDBMS to enrich with child data objects and metadata.
     MysqlRdbms mysql_rdbms = 101;
+
+    // PostgreSQL RDBMS to enrich with child data objects and metadata.
+    PostgresqlRdbms postgresql_rdbms = 102;
   }
 }
 
@@ -344,6 +347,9 @@ message DiscoverConnectionProfileResponse {
 
     // Enriched MySQL RDBMS object.
     MysqlRdbms mysql_rdbms = 101;
+
+    // Enriched PostgreSQL RDBMS object.
+    PostgresqlRdbms postgresql_rdbms = 102;
   }
 }
 

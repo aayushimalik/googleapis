@@ -21,6 +21,8 @@ apis:
 - name: google.cloud.dialogflow.v2.SessionEntityTypes
 - name: google.cloud.dialogflow.v2.Sessions
 - name: google.cloud.dialogflow.v2.Versions
+- name: google.cloud.location.Locations
+- name: google.longrunning.Operations
 
 types:
 - name: google.cloud.dialogflow.v2.BatchUpdateEntityTypesResponse
@@ -107,6 +109,8 @@ backend:
   - selector: 'google.cloud.dialogflow.v2.Participants.*'
     deadline: 60.0
   - selector: google.cloud.dialogflow.v2.Participants.AnalyzeContent
+    deadline: 220.0
+  - selector: google.cloud.dialogflow.v2.Participants.StreamingAnalyzeContent
     deadline: 220.0
   - selector: 'google.cloud.dialogflow.v2.SessionEntityTypes.*'
     deadline: 60.0

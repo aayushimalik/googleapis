@@ -4,12 +4,16 @@ name: retail.googleapis.com
 title: Retail API
 
 apis:
+- name: google.cloud.location.Locations
 - name: google.cloud.retail.v2.CatalogService
 - name: google.cloud.retail.v2.CompletionService
+- name: google.cloud.retail.v2.ControlService
 - name: google.cloud.retail.v2.PredictionService
 - name: google.cloud.retail.v2.ProductService
 - name: google.cloud.retail.v2.SearchService
+- name: google.cloud.retail.v2.ServingConfigService
 - name: google.cloud.retail.v2.UserEventService
+- name: google.longrunning.Operations
 
 types:
 - name: google.cloud.retail.logging.ErrorLog
@@ -49,10 +53,14 @@ backend:
   rules:
   - selector: google.cloud.retail.v2.CatalogService.UpdateCatalog
     deadline: 10.0
+  - selector: google.cloud.retail.v2.CompletionService.ImportCompletionData
+    deadline: 300.0
   - selector: 'google.cloud.retail.v2.ProductService.*'
     deadline: 30.0
   - selector: google.cloud.retail.v2.ProductService.ImportProducts
     deadline: 300.0
+  - selector: google.cloud.retail.v2.UserEventService.CollectUserEvent
+    deadline: 10.0
   - selector: google.cloud.retail.v2.UserEventService.ImportUserEvents
     deadline: 600.0
   - selector: google.cloud.retail.v2.UserEventService.PurgeUserEvents
@@ -96,6 +104,10 @@ authentication:
     oauth:
       canonical_scopes: |-
         https://www.googleapis.com/auth/cloud-platform
+  - selector: 'google.cloud.retail.v2.ControlService.*'
+    oauth:
+      canonical_scopes: |-
+        https://www.googleapis.com/auth/cloud-platform
   - selector: google.cloud.retail.v2.PredictionService.Predict
     oauth:
       canonical_scopes: |-
@@ -105,6 +117,10 @@ authentication:
       canonical_scopes: |-
         https://www.googleapis.com/auth/cloud-platform
   - selector: google.cloud.retail.v2.SearchService.Search
+    oauth:
+      canonical_scopes: |-
+        https://www.googleapis.com/auth/cloud-platform
+  - selector: 'google.cloud.retail.v2.ServingConfigService.*'
     oauth:
       canonical_scopes: |-
         https://www.googleapis.com/auth/cloud-platform

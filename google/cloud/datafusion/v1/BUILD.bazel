@@ -69,9 +69,11 @@ java_gapic_library(
     name = "datafusion_java_gapic",
     srcs = [":datafusion_proto_with_info"],
     grpc_service_config = "datafusion_grpc_service_config.json",
+    rest_numeric_enums = True,
     test_deps = [
         ":datafusion_java_grpc",
     ],
+    transport = "grpc+rest",
     deps = [
         ":datafusion_java_proto",
     ],
@@ -80,6 +82,7 @@ java_gapic_library(
 java_gapic_test(
     name = "datafusion_java_gapic_test_suite",
     test_classes = [
+        "com.google.cloud.datafusion.v1.DataFusionClientHttpJsonTest",
         "com.google.cloud.datafusion.v1.DataFusionClientTest",
     ],
     runtime_deps = [":datafusion_java_gapic_test"],
@@ -88,6 +91,8 @@ java_gapic_test(
 # Open Source Packages
 java_gapic_assembly_gradle_pkg(
     name = "google-cloud-datafusion-v1-java",
+    include_samples = True,
+    transport = "grpc+rest",
     deps = [
         ":datafusion_java_gapic",
         ":datafusion_java_grpc",
@@ -110,7 +115,7 @@ load(
 go_proto_library(
     name = "datafusion_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "google.golang.org/genproto/googleapis/cloud/datafusion/v1",
+    importpath = "cloud.google.com/go/datafusion/apiv1/datafusionpb",
     protos = [":datafusion_proto"],
     deps = [
         "//google/api:annotations_go_proto",
@@ -123,13 +128,16 @@ go_gapic_library(
     srcs = [":datafusion_proto_with_info"],
     grpc_service_config = "datafusion_grpc_service_config.json",
     importpath = "cloud.google.com/go/datafusion/apiv1;datafusion",
+    release_level = "ga",
     metadata = True,
+    rest_numeric_enums = True,
     service_yaml = "datafusion_v1.yaml",
+    transport = "grpc+rest",
     deps = [
         ":datafusion_go_proto",
         "//google/longrunning:longrunning_go_proto",
-        "@com_google_cloud_go//longrunning:go_default_library",
-        "@com_google_cloud_go//longrunning/autogen:go_default_library",
+        "@com_google_cloud_go_longrunning//:go_default_library",
+        "@com_google_cloud_go_longrunning//autogen:go_default_library",
     ],
 )
 
@@ -158,6 +166,7 @@ load(
     "@com_google_googleapis_imports//:imports.bzl",
     "py_gapic_assembly_pkg",
     "py_gapic_library",
+    "py_test",
 )
 
 py_gapic_library(
@@ -169,6 +178,18 @@ py_gapic_library(
         "python-gapic-namespace=google.cloud",
         "python-gapic-name=data_fusion",
     ],
+    rest_numeric_enums = True,
+    transport = "grpc",
+)
+
+py_test(
+    name = "datafusion_py_gapic_test",
+    srcs = [
+        "datafusion_py_gapic_pytest.py",
+        "datafusion_py_gapic_test.py",
+    ],
+    legacy_create_init = False,
+    deps = [":datafusion_py_gapic"],
 )
 
 # Open Source Packages
@@ -205,7 +226,9 @@ php_gapic_library(
     name = "datafusion_php_gapic",
     srcs = [":datafusion_proto_with_info"],
     grpc_service_config = "datafusion_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "datafusion_v1.yaml",
+    transport = "grpc+rest",
     deps = [
         ":datafusion_php_grpc",
         ":datafusion_php_proto",
@@ -238,7 +261,9 @@ nodejs_gapic_library(
     extra_protoc_parameters = ["metadata"],
     grpc_service_config = "datafusion_grpc_service_config.json",
     package = "google.cloud.datafusion.v1",
+    rest_numeric_enums = True,
     service_yaml = "datafusion_v1.yaml",
+    transport = "grpc+rest",
     deps = [],
 )
 
@@ -282,6 +307,7 @@ ruby_cloud_gapic_library(
         "ruby-cloud-product-url=https://cloud.google.com/data-fusion",
     ],
     grpc_service_config = "datafusion_grpc_service_config.json",
+    rest_numeric_enums = True,
     ruby_cloud_description = "Cloud Data Fusion is a fully managed, cloud-native, enterprise data integration service for quickly building and managing data pipelines.",
     ruby_cloud_title = "Cloud Data Fusion V1",
     deps = [
@@ -327,11 +353,13 @@ csharp_gapic_library(
     srcs = [":datafusion_proto_with_info"],
     common_resources_config = "@gax_dotnet//:Google.Api.Gax/ResourceNames/CommonResourcesConfig.json",
     grpc_service_config = "datafusion_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "datafusion_v1.yaml",
     deps = [
         ":datafusion_csharp_grpc",
         ":datafusion_csharp_proto",
     ],
+    transport = "grpc+rest",
 )
 
 # Open Source Packages

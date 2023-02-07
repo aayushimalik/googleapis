@@ -21,13 +21,11 @@ import "google/api/client.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
 import "google/longrunning/operations.proto";
-import "google/protobuf/empty.proto";
 import "google/protobuf/timestamp.proto";
-import "google/rpc/status.proto";
 
 option cc_enable_arenas = true;
 option csharp_namespace = "Google.Cloud.Translate.V3";
-option go_package = "google.golang.org/genproto/googleapis/cloud/translate/v3;translate";
+option go_package = "cloud.google.com/go/translation/apiv3/translationpb;translationpb";
 option java_multiple_files = true;
 option java_outer_classname = "TranslationServiceProto";
 option java_package = "com.google.cloud.translate.v3";
@@ -547,7 +545,7 @@ message OutputConfig {
     // (https://cloud.google.com/storage/docs/bucket-lock?hl=en#retention-policy)
     //
     // The format of translations_file (for target language code 'trg') is:
-    // gs://translation_test/a_b_c_'trg'_translations.[extension]
+    // `gs://translation_test/a_b_c_'trg'_translations.[extension]`
     //
     // If the input file extension is tsv, the output has the following
     // columns:

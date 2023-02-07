@@ -117,6 +117,7 @@ java_grpc_library(
 #         ":sql_java_proto",
 #         ":sql_proto",
 #     ],
+#    include_samples = True,
 # )
 
 ##############################################################################
@@ -133,7 +134,7 @@ load(
 go_proto_library(
     name = "sql_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "google.golang.org/genproto/googleapis/cloud/sql/v1",
+    importpath = "cloud.google.com/go/sql/apiv1/sqlpb",
     protos = [":sql_proto"],
     deps = [
         "//google/api:annotations_go_proto",
@@ -149,6 +150,7 @@ go_proto_library(
 #     importpath = "cloud.google.com/go/sql/apiv1;sql",
 #     service_yaml = "sqladmin_v1.yaml",
 #     metadata = True,
+#     release_level = "beta",
 #     deps = [
 #         ":sql_go_proto",
 #     ],
@@ -179,12 +181,25 @@ load(
     "@com_google_googleapis_imports//:imports.bzl",
     "py_gapic_assembly_pkg",
     "py_gapic_library",
+    "py_test",
 )
 
 py_gapic_library(
     name = "sql_py_gapic",
     srcs = [":sql_proto"],
     grpc_service_config = "sqladmin_grpc_service_config.json",
+    rest_numeric_enums = True,
+    transport = "grpc",
+)
+
+py_test(
+    name = "sql_py_gapic_test",
+    srcs = [
+        "sql_py_gapic_pytest.py",
+        "sql_py_gapic_test.py",
+    ],
+    legacy_create_init = False,
+    deps = [":sql_py_gapic"],
 )
 
 # Open Source Packages
@@ -221,7 +236,9 @@ php_gapic_library(
     name = "sql_php_gapic",
     srcs = [":sql_proto_with_info"],
     grpc_service_config = "sqladmin_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "sqladmin_v1.yaml",
+    transport = "grpc+rest",
     deps = [
         ":sql_php_grpc",
         ":sql_php_proto",
@@ -254,7 +271,9 @@ nodejs_gapic_library(
     extra_protoc_parameters = ["metadata"],
     grpc_service_config = "sqladmin_grpc_service_config.json",
     package = "google.cloud.sql.v1",
+    rest_numeric_enums = True,
     service_yaml = "sqladmin_v1.yaml",
+    transport = "grpc+rest",
     deps = [],
 )
 
@@ -271,8 +290,8 @@ nodejs_gapic_assembly_pkg(
 ##############################################################################
 load(
     "@com_google_googleapis_imports//:imports.bzl",
-    "ruby_gapic_assembly_pkg",
     "ruby_cloud_gapic_library",
+    "ruby_gapic_assembly_pkg",
     "ruby_grpc_library",
     "ruby_proto_library",
 )
@@ -295,6 +314,7 @@ ruby_cloud_gapic_library(
         "ruby-cloud-gem-name=google-cloud-sql-v1",
     ],
     grpc_service_config = "sqladmin_grpc_service_config.json",
+    rest_numeric_enums = True,
     deps = [
         ":sql_ruby_grpc",
         ":sql_ruby_proto",

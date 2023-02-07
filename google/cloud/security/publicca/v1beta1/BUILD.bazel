@@ -68,10 +68,12 @@ java_gapic_library(
     srcs = [":publicca_proto_with_info"],
     gapic_yaml = None,
     grpc_service_config = "publicca_v1beta1_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "publicca_v1beta1.yaml",
     test_deps = [
         ":publicca_java_grpc",
     ],
+    transport = "grpc+rest",
     deps = [
         ":publicca_java_proto",
         "//google/api:api_java_proto",
@@ -81,6 +83,7 @@ java_gapic_library(
 java_gapic_test(
     name = "publicca_java_gapic_test_suite",
     test_classes = [
+        "com.google.cloud.security.publicca.v1beta1.PublicCertificateAuthorityServiceClientHttpJsonTest",
         "com.google.cloud.security.publicca.v1beta1.PublicCertificateAuthorityServiceClientTest",
     ],
     runtime_deps = [":publicca_java_gapic_test"],
@@ -89,6 +92,8 @@ java_gapic_test(
 # Open Source Packages
 java_gapic_assembly_gradle_pkg(
     name = "google-cloud-security-publicca-v1beta1-java",
+    include_samples = True,
+    transport = "grpc+rest",
     deps = [
         ":publicca_java_gapic",
         ":publicca_java_grpc",
@@ -111,7 +116,7 @@ load(
 go_proto_library(
     name = "publicca_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "google.golang.org/genproto/googleapis/cloud/security/publicca/v1beta1",
+    importpath = "cloud.google.com/go/security/publicca/apiv1beta1/publiccapb",
     protos = [":publicca_proto"],
     deps = [
         "//google/api:annotations_go_proto",
@@ -123,8 +128,11 @@ go_gapic_library(
     srcs = [":publicca_proto_with_info"],
     grpc_service_config = "publicca_v1beta1_grpc_service_config.json",
     importpath = "cloud.google.com/go/security/publicca/apiv1beta1;publicca",
+    release_level = "beta",
     metadata = True,
+    rest_numeric_enums = True,
     service_yaml = "publicca_v1beta1.yaml",
+    transport = "grpc+rest",
     deps = [
         ":publicca_go_proto",
     ],
@@ -155,13 +163,31 @@ load(
     "@com_google_googleapis_imports//:imports.bzl",
     "py_gapic_assembly_pkg",
     "py_gapic_library",
+    "py_test",
 )
 
 py_gapic_library(
     name = "publicca_py_gapic",
     srcs = [":publicca_proto"],
     grpc_service_config = "publicca_v1beta1_grpc_service_config.json",
+    opt_args = [
+        "warehouse-package-name=google-cloud-public-ca",
+    ],
+    rest_numeric_enums = True,
     service_yaml = "publicca_v1beta1.yaml",
+    transport = "grpc+rest",
+    deps = [
+    ],
+)
+
+py_test(
+    name = "publicca_py_gapic_test",
+    srcs = [
+        "publicca_py_gapic_pytest.py",
+        "publicca_py_gapic_test.py",
+    ],
+    legacy_create_init = False,
+    deps = [":publicca_py_gapic"],
 )
 
 # Open Source Packages
@@ -198,7 +224,9 @@ php_gapic_library(
     name = "publicca_php_gapic",
     srcs = [":publicca_proto_with_info"],
     grpc_service_config = "publicca_v1beta1_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "publicca_v1beta1.yaml",
+    transport = "grpc+rest",
     deps = [
         ":publicca_php_grpc",
         ":publicca_php_proto",
@@ -231,7 +259,9 @@ nodejs_gapic_library(
     extra_protoc_parameters = ["metadata"],
     grpc_service_config = "publicca_v1beta1_grpc_service_config.json",
     package = "google.cloud.security.publicca.v1beta1",
+    rest_numeric_enums = True,
     service_yaml = "publicca_v1beta1.yaml",
+    transport = "grpc+rest",
     deps = [],
 )
 
@@ -269,9 +299,17 @@ ruby_cloud_gapic_library(
     name = "publicca_ruby_gapic",
     srcs = [":publicca_proto_with_info"],
     extra_protoc_parameters = [
-        "ruby-cloud-gem-name=google-cloud-security-publicca-v1beta1",
+        "ruby-cloud-api-id=publicca.googleapis.com",
+        "ruby-cloud-api-shortname=publicca",
+        "ruby-cloud-gem-name=google-cloud-security-public_ca-v1beta1",
+        "ruby-cloud-gem-namespace=Google::Cloud::Security::PublicCA::V1beta1",
+        "ruby-cloud-product-url=https://cloud.google.com/certificate-manager/docs/public-ca/",
     ],
     grpc_service_config = "publicca_v1beta1_grpc_service_config.json",
+    rest_numeric_enums = True,
+    ruby_cloud_description = "Certificate Manager's Public Certificate Authority (CA) functionality allows you to provision and deploy widely trusted X.509 certificates after validating that the certificate requester controls the domains. Certificate Manager lets you directly and programmatically request publicly trusted TLS certificates that are already in the root of trust stores used by major browsers, operating systems, and applications. You can use these TLS certificates to authenticate and encrypt internet traffic.",
+    ruby_cloud_title = "Public Certificate Authority V1beta1",
+    service_yaml = "publicca_v1beta1.yaml",
     deps = [
         ":publicca_ruby_grpc",
         ":publicca_ruby_proto",
@@ -315,11 +353,13 @@ csharp_gapic_library(
     srcs = [":publicca_proto_with_info"],
     common_resources_config = "@gax_dotnet//:Google.Api.Gax/ResourceNames/CommonResourcesConfig.json",
     grpc_service_config = "publicca_v1beta1_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "publicca_v1beta1.yaml",
     deps = [
         ":publicca_csharp_grpc",
         ":publicca_csharp_proto",
     ],
+    transport = "grpc+rest",
 )
 
 # Open Source Packages

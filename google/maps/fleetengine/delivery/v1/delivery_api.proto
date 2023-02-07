@@ -20,6 +20,7 @@ import "google/api/annotations.proto";
 import "google/api/client.proto";
 import "google/api/field_behavior.proto";
 import "google/api/resource.proto";
+import "google/api/routing.proto";
 import "google/geo/type/viewport.proto";
 import "google/maps/fleetengine/delivery/v1/delivery_vehicles.proto";
 import "google/maps/fleetengine/delivery/v1/header.proto";
@@ -41,18 +42,32 @@ service DeliveryService {
   option (google.api.default_host) = "fleetengine.googleapis.com";
 
   // Creates and returns a new `DeliveryVehicle`.
-  rpc CreateDeliveryVehicle(CreateDeliveryVehicleRequest) returns (DeliveryVehicle) {
+  rpc CreateDeliveryVehicle(CreateDeliveryVehicleRequest)
+      returns (DeliveryVehicle) {
     option (google.api.http) = {
       post: "/v1/{parent=providers/*}/deliveryVehicles"
       body: "delivery_vehicle"
     };
-    option (google.api.method_signature) = "parent,delivery_vehicle,delivery_vehicle_id";
+    option (google.api.routing) = {
+      routing_parameters {
+        field: "parent"
+        path_template: "{provider_id=providers/*}"
+      }
+    };
+    option (google.api.method_signature) =
+        "parent,delivery_vehicle,delivery_vehicle_id";
   }
 
   // Returns the specified `DeliveryVehicle` instance.
   rpc GetDeliveryVehicle(GetDeliveryVehicleRequest) returns (DeliveryVehicle) {
     option (google.api.http) = {
       get: "/v1/{name=providers/*/deliveryVehicles/*}"
+    };
+    option (google.api.routing) = {
+      routing_parameters {
+        field: "name"
+        path_template: "{provider_id=providers/*}"
+      }
     };
     option (google.api.method_signature) = "name";
   }
@@ -64,12 +79,34 @@ service DeliveryService {
   // on the `DeliveryVehicle`. The `task_id`s are retrieved from
   // `remaining_vehicle_journey_segments`, and their corresponding `Tasks` are
   // assigned to the `DeliveryVehicle` if they have not yet been assigned.
-  rpc UpdateDeliveryVehicle(UpdateDeliveryVehicleRequest) returns (DeliveryVehicle) {
+  rpc UpdateDeliveryVehicle(UpdateDeliveryVehicleRequest)
+      returns (DeliveryVehicle) {
     option (google.api.http) = {
       patch: "/v1/{delivery_vehicle.name=providers/*/deliveryVehicles/*}"
       body: "delivery_vehicle"
     };
+    option (google.api.routing) = {
+      routing_parameters {
+        field: "delivery_vehicle.name"
+        path_template: "{provider_id=providers/*}"
+      }
+    };
     option (google.api.method_signature) = "delivery_vehicle,update_mask";
+  }
+
+  // Creates and returns a batch of new `Task` objects.
+  rpc BatchCreateTasks(BatchCreateTasksRequest)
+      returns (BatchCreateTasksResponse) {
+    option (google.api.http) = {
+      post: "/v1/{parent=providers/*}/tasks:batchCreate"
+      body: "*"
+    };
+    option (google.api.routing) = {
+      routing_parameters {
+        field: "parent"
+        path_template: "{provider_id=providers/*}"
+      }
+    };
   }
 
   // Creates and returns a new `Task` object.
@@ -77,6 +114,12 @@ service DeliveryService {
     option (google.api.http) = {
       post: "/v1/{parent=providers/*}/tasks"
       body: "task"
+    };
+    option (google.api.routing) = {
+      routing_parameters {
+        field: "parent"
+        path_template: "{provider_id=providers/*}"
+      }
     };
     option (google.api.method_signature) = "parent,task,task_id";
   }
@@ -86,6 +129,12 @@ service DeliveryService {
     option (google.api.http) = {
       get: "/v1/{name=providers/*/tasks/*}"
     };
+    option (google.api.routing) = {
+      routing_parameters {
+        field: "name"
+        path_template: "{provider_id=providers/*}"
+      }
+    };
     option (google.api.method_signature) = "name";
   }
 
@@ -93,6 +142,12 @@ service DeliveryService {
   rpc SearchTasks(SearchTasksRequest) returns (SearchTasksResponse) {
     option (google.api.http) = {
       get: "/v1/{parent=providers/*}/tasks:search"
+    };
+    option (google.api.routing) = {
+      routing_parameters {
+        field: "parent"
+        path_template: "{provider_id=providers/*}"
+      }
     };
     option (google.api.method_signature) = "parent";
   }
@@ -103,6 +158,12 @@ service DeliveryService {
       patch: "/v1/{task.name=providers/*/tasks/*}"
       body: "task"
     };
+    option (google.api.routing) = {
+      routing_parameters {
+        field: "task.name"
+        path_template: "{provider_id=providers/*}"
+      }
+    };
     option (google.api.method_signature) = "task,update_mask";
   }
 
@@ -111,13 +172,26 @@ service DeliveryService {
     option (google.api.http) = {
       get: "/v1/{parent=providers/*}/tasks"
     };
+    option (google.api.routing) = {
+      routing_parameters {
+        field: "parent"
+        path_template: "{provider_id=providers/*}"
+      }
+    };
     option (google.api.method_signature) = "parent";
   }
 
   // Gets all `DeliveryVehicle`s that meet the specified filtering criteria.
-  rpc ListDeliveryVehicles(ListDeliveryVehiclesRequest) returns (ListDeliveryVehiclesResponse) {
+  rpc ListDeliveryVehicles(ListDeliveryVehiclesRequest)
+      returns (ListDeliveryVehiclesResponse) {
     option (google.api.http) = {
       get: "/v1/{parent=providers/*}/deliveryVehicles"
+    };
+    option (google.api.routing) = {
+      routing_parameters {
+        field: "parent"
+        path_template: "{provider_id=providers/*}"
+      }
     };
     option (google.api.method_signature) = "parent";
   }
@@ -128,23 +202,23 @@ message CreateDeliveryVehicleRequest {
   // Optional. The standard Delivery API request header.
   DeliveryRequestHeader header = 1 [(google.api.field_behavior) = OPTIONAL];
 
-  // Required. Must be in the format `providers/{provider}`. The provider must be the
-  // Google Cloud Project ID. For example, `sample-cloud-project`.
+  // Required. Must be in the format `providers/{provider}`. The provider must
+  // be the Google Cloud Project ID. For example, `sample-cloud-project`.
   string parent = 3 [(google.api.field_behavior) = REQUIRED];
 
-  // Required. The Delivery Vehicle ID must be unique and subject to the following
-  // restrictions:
+  // Required. The Delivery Vehicle ID must be unique and subject to the
+  // following restrictions:
   //
   // * Must be a valid Unicode string.
   // * Limited to a maximum length of 64 characters.
-  // * Normalized according to Unicode Normalization Form C
+  // * Normalized according to [Unicode Normalization Form C]
   // (http://www.unicode.org/reports/tr15/).
   // * May not contain any of the following ASCII characters: '/', ':', '?',
   // ',', or '#'.
   string delivery_vehicle_id = 4 [(google.api.field_behavior) = REQUIRED];
 
-  // Required. The `DeliveryVehicle` entity to create. When creating a new delivery
-  // vehicle, you may set the following optional fields:
+  // Required. The `DeliveryVehicle` entity to create. When creating a new
+  // delivery vehicle, you may set the following optional fields:
   //
   // * last_location
   // * attributes
@@ -187,13 +261,13 @@ message ListDeliveryVehiclesRequest {
     }
   ];
 
-  // Optional. The maximum number of vehicles to return. The service may return fewer than
-  // this number. If you don't specify this number, then the server determines
-  // the number of results to return.
+  // Optional. The maximum number of vehicles to return. The service may return
+  // fewer than this number. If you don't specify this number, then the server
+  // determines the number of results to return.
   int32 page_size = 4 [(google.api.field_behavior) = OPTIONAL];
 
-  // Optional. A page token, received from a previous `ListDeliveryVehicles` call. You
-  // must provide this in order to retrieve the subsequent page.
+  // Optional. A page token, received from a previous `ListDeliveryVehicles`
+  // call. You must provide this in order to retrieve the subsequent page.
   //
   // When paginating, all other parameters provided to `ListDeliveryVehicles`
   // must match the call that provided the page token.
@@ -205,18 +279,26 @@ message ListDeliveryVehiclesRequest {
   // delivery vehicles are returned.
   //
   // Note that the only queries supported for `ListDeliveryVehicles` are
-  // equality comparisons on vehicle attributes (`attributes.<key> = <value>`).
-  // Comparison operators besides `=` (like `!=`, `>`, `<`, etc.) aren't
-  // supported. Queries that include them are rejected. You can combine
-  // attribute equality queries with **AND**, but not with any other boolean
-  // operator.
+  // on vehicle attributes (for example, `attributes.<key> = <value>` or
+  // `attributes.<key1> = <value1> AND attributes.<key2> = <value2>`). Also, all
+  // attributes are stored as strings, so the only supported comparisons against
+  // attributes are string comparisons. In order to compare against number or
+  // boolean values, the values must be explicitly quoted to be treated as
+  // strings (for example, `attributes.<key> = "10"` or
+  // `attributes.<key> = "true"`).
+  //
+  // The maximum number of restrictions allowed in a filter query is 50. A
+  // restriction is a part of the query of the form
+  // `attribute.<KEY> <COMPARATOR> <VALUE>`, for example `attributes.foo = bar`
+  // is 1 restriction.
   string filter = 6 [(google.api.field_behavior) = OPTIONAL];
 
-  // Optional. A filter that limits the search area to a rectangle defined by the
-  // northeast and southwest corner points.
+  // Optional. A filter that limits the search area to a rectangle defined by
+  // the northeast and southwest corner points.
   //
   // When defined, only vehicles located within the search area are returned.
-  google.geo.type.Viewport viewport = 7 [(google.api.field_behavior) = OPTIONAL];
+  google.geo.type.Viewport viewport = 7
+      [(google.api.field_behavior) = OPTIONAL];
 }
 
 // The `ListDeliveryVehicles` response message.
@@ -251,7 +333,40 @@ message UpdateDeliveryVehicleRequest {
   //
   // This is a comma-separated list of fully qualified names of fields. Example:
   // `"remaining_vehicle_journey_segments"`.
-  google.protobuf.FieldMask update_mask = 4 [(google.api.field_behavior) = REQUIRED];
+  google.protobuf.FieldMask update_mask = 4
+      [(google.api.field_behavior) = REQUIRED];
+}
+
+// The `BatchCreateTask` request message.
+message BatchCreateTasksRequest {
+  // Optional. The standard Delivery API request header.
+  // Note: If you set this field, then the header field in the
+  // `CreateTaskRequest` messages must either be empty, or it must match this
+  // field.
+  DeliveryRequestHeader header = 1 [(google.api.field_behavior) = OPTIONAL];
+
+  // Required. The parent resource shared by all tasks. This value must be in
+  // the format `providers/{provider}`. The `provider` must be the Google Cloud
+  // Project ID. For example, `sample-cloud-project`. The parent field in the
+  // `CreateTaskRequest` messages must either  be empty, or it must match this
+  // field.
+  string parent = 3 [
+    (google.api.field_behavior) = REQUIRED,
+    (google.api.resource_reference) = {
+      child_type: "fleetengine.googleapis.com/Task"
+    }
+  ];
+
+  // Required. The request message that specifies the resources to create.
+  // Note: You can create a maximum of 500 tasks in a batch.
+  repeated CreateTaskRequest requests = 4
+      [(google.api.field_behavior) = REQUIRED];
+}
+
+// The `BatchCreateTask` response message.
+message BatchCreateTasksResponse {
+  // The created Tasks.
+  repeated Task tasks = 1;
 }
 
 // The `CreateTask` request message.
@@ -259,18 +374,18 @@ message CreateTaskRequest {
   // Optional. The standard Delivery API request header.
   DeliveryRequestHeader header = 1 [(google.api.field_behavior) = OPTIONAL];
 
-  // Required. Must be in the format `providers/{provider}`. The `provider` must be the
-  // Google Cloud Project ID. For example, `sample-cloud-project`.
+  // Required. Must be in the format `providers/{provider}`. The `provider` must
+  // be the Google Cloud Project ID. For example, `sample-cloud-project`.
   string parent = 3 [(google.api.field_behavior) = REQUIRED];
 
-  // Required. The Task ID must be unique, but it should be not a shipment tracking ID. To
-  // store a shipment tracking ID, use the `tracking_id` field. Note that
-  // multiple tasks can have the same `tracking_id`. Task IDs are subject to the
-  // following restrictions:
+  // Required. The Task ID must be unique, but it should be not a shipment
+  // tracking ID. To store a shipment tracking ID, use the `tracking_id` field.
+  // Note that multiple tasks can have the same `tracking_id`. Task IDs are
+  // subject to the following restrictions:
   //
   // * Must be a valid Unicode string.
   // * Limited to a maximum length of 64 characters.
-  // * Normalized according to Unicode Normalization Form C
+  // * Normalized according to [Unicode Normalization Form C]
   // (http://www.unicode.org/reports/tr15/).
   // * May not contain any of the following ASCII characters: '/', ':', '?',
   // ',', or '#'.
@@ -296,8 +411,9 @@ message GetTaskRequest {
   // Optional. The standard Delivery API request header.
   DeliveryRequestHeader header = 1 [(google.api.field_behavior) = OPTIONAL];
 
-  // Required. Must be in the format `providers/{provider}/tasks/{task}`. The `provider`
-  // must be the Google Cloud Project ID. For example, `sample-cloud-project`.
+  // Required. Must be in the format `providers/{provider}/tasks/{task}`. The
+  // `provider` must be the Google Cloud Project ID. For example,
+  // `sample-cloud-project`.
   string name = 3 [
     (google.api.field_behavior) = REQUIRED,
     (google.api.resource_reference) = {
@@ -316,24 +432,24 @@ message SearchTasksRequest {
   // `sample-cloud-project`.
   string parent = 3 [(google.api.field_behavior) = REQUIRED];
 
-  // Required. The identifier of the set of related Tasks being requested. Tracking IDs
-  // are subject to the following restrictions:
+  // Required. The identifier of the set of related Tasks being requested.
+  // Tracking IDs are subject to the following restrictions:
   //
   // * Must be a valid Unicode string.
   // * Limited to a maximum length of 64 characters.
-  // * Normalized according to Unicode Normalization Form C
+  // * Normalized according to [Unicode Normalization Form C]
   // (http://www.unicode.org/reports/tr15/).
   // * May not contain any of the following ASCII characters: '/', ':', '?',
   // ',', or '#'.
   string tracking_id = 4 [(google.api.field_behavior) = REQUIRED];
 
-  // Optional. The maximum number of Tasks to return. The service may return fewer than
-  // this value. If you don't specify this value, then the server determines the
-  // number of results to return.
+  // Optional. The maximum number of Tasks to return. The service may return
+  // fewer than this value. If you don't specify this value, then the server
+  // determines the number of results to return.
   int32 page_size = 5 [(google.api.field_behavior) = OPTIONAL];
 
-  // Optional. A page token, received from a previous `SearchTasks` call. You must
-  // provide this value to retrieve the subsequent page.
+  // Optional. A page token, received from a previous `SearchTasks` call. You
+  // must provide this value to retrieve the subsequent page.
   //
   // When paginating, all other parameters provided to `SearchTasks` must match
   // the call that provided the page token.
@@ -382,7 +498,8 @@ message UpdateTaskRequest {
   //
   // This is a comma-separated list of fully qualified names of fields. Example:
   // `"task_outcome,task_outcome_time,task_outcome_location"`.
-  google.protobuf.FieldMask update_mask = 4 [(google.api.field_behavior) = REQUIRED];
+  google.protobuf.FieldMask update_mask = 4
+      [(google.api.field_behavior) = REQUIRED];
 }
 
 // The `ListTasks` request message.
@@ -400,9 +517,9 @@ message ListTasksRequest {
     }
   ];
 
-  // Optional. The maximum number of Tasks to return. The service may return fewer than
-  // this value. If you don't specify this value, then the server determines the
-  // number of results to return.
+  // Optional. The maximum number of Tasks to return. The service may return
+  // fewer than this value. If you don't specify this value, then the server
+  // determines the number of results to return.
   int32 page_size = 4 [(google.api.field_behavior) = OPTIONAL];
 
   // Optional. A page token received from a previous `ListTasks` call.
@@ -412,11 +529,10 @@ message ListTasksRequest {
   // the call that provided the page token.
   string page_token = 5 [(google.api.field_behavior) = OPTIONAL];
 
-  // Optional. A filter query to apply when listing Tasks. See http://aip.dev/160 for
-  // examples of filter syntax. If you don't specify a value, or if you filter
-  // on an empty string, then all Tasks are returned. For information about the
-  // Task properties that you can filter on, see
-  // [Task
+  // Optional. A filter query to apply when listing Tasks. See
+  // http://aip.dev/160 for examples of filter syntax. If you don't specify a
+  // value, or if you filter on an empty string, then all Tasks are returned.
+  // For information about the Task properties that you can filter on, see [Task
   // list](/maps/documentation/transportation-logistics/last-mile-fleet-solution/fleet-performance/fleet-engine/deliveries_api#list_tasks).
   string filter = 6 [(google.api.field_behavior) = OPTIONAL];
 }

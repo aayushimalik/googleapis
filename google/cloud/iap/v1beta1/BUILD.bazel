@@ -65,13 +65,18 @@ java_grpc_library(
 java_gapic_library(
     name = "iap_java_gapic",
     srcs = [":iap_proto_with_info"],
+    gapic_yaml = None,
     grpc_service_config = "iap_grpc_service_config.json",
+    rest_numeric_enums = True,
+    service_yaml = "iap_v1beta1.yaml",
     test_deps = [
         ":iap_java_grpc",
         "//google/iam/v1:iam_java_grpc",
     ],
+    transport = "grpc+rest",
     deps = [
         ":iap_java_proto",
+        "//google/api:api_java_proto",
         "//google/iam/v1:iam_java_proto",
     ],
 )
@@ -79,6 +84,7 @@ java_gapic_library(
 java_gapic_test(
     name = "iap_java_gapic_test_suite",
     test_classes = [
+        "com.google.cloud.iap.v1beta1.IdentityAwareProxyAdminV1Beta1ClientHttpJsonTest",
         "com.google.cloud.iap.v1beta1.IdentityAwareProxyAdminV1Beta1ClientTest",
     ],
     runtime_deps = [":iap_java_gapic_test"],
@@ -87,6 +93,8 @@ java_gapic_test(
 # Open Source Packages
 java_gapic_assembly_gradle_pkg(
     name = "google-cloud-iap-v1beta1-java",
+    include_samples = True,
+    transport = "grpc+rest",
     deps = [
         ":iap_java_gapic",
         ":iap_java_grpc",
@@ -109,7 +117,7 @@ load(
 go_proto_library(
     name = "iap_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "google.golang.org/genproto/googleapis/cloud/iap/v1beta1",
+    importpath = "cloud.google.com/go/iap/apiv1beta1/iappb",
     protos = [":iap_proto"],
     deps = [
         "//google/api:annotations_go_proto",
@@ -122,8 +130,11 @@ go_gapic_library(
     srcs = [":iap_proto_with_info"],
     grpc_service_config = "iap_grpc_service_config.json",
     importpath = "cloud.google.com/go/iap/apiv1beta1;iap",
+    release_level = "beta",
     metadata = True,
+    rest_numeric_enums = True,
     service_yaml = "iap_v1beta1.yaml",
+    transport = "grpc+rest",
     deps = [
         ":iap_go_proto",
         "//google/iam/v1:iam_go_proto",
@@ -155,12 +166,29 @@ load(
     "@com_google_googleapis_imports//:imports.bzl",
     "py_gapic_assembly_pkg",
     "py_gapic_library",
+    "py_test",
 )
 
 py_gapic_library(
     name = "iap_py_gapic",
     srcs = [":iap_proto"],
     grpc_service_config = "iap_grpc_service_config.json",
+    rest_numeric_enums = True,
+    service_yaml = "iap_v1beta1.yaml",
+    transport = "grpc",
+    deps = [
+        "//google/iam/v1:iam_policy_py_proto",
+    ],
+)
+
+py_test(
+    name = "iap_py_gapic_test",
+    srcs = [
+        "iap_py_gapic_pytest.py",
+        "iap_py_gapic_test.py",
+    ],
+    legacy_create_init = False,
+    deps = [":iap_py_gapic"],
 )
 
 # Open Source Packages
@@ -197,7 +225,9 @@ php_gapic_library(
     name = "iap_php_gapic",
     srcs = [":iap_proto_with_info"],
     grpc_service_config = "iap_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "iap_v1beta1.yaml",
+    transport = "grpc+rest",
     deps = [
         ":iap_php_grpc",
         ":iap_php_proto",
@@ -230,7 +260,9 @@ nodejs_gapic_library(
     extra_protoc_parameters = ["metadata"],
     grpc_service_config = "iap_grpc_service_config.json",
     package = "google.cloud.iap.v1beta1",
+    rest_numeric_enums = True,
     service_yaml = "iap_v1beta1.yaml",
+    transport = "grpc+rest",
     deps = [],
 )
 
@@ -268,15 +300,17 @@ ruby_cloud_gapic_library(
     name = "iap_ruby_gapic",
     srcs = [":iap_proto_with_info"],
     extra_protoc_parameters = [
-        "ruby-cloud-gem-name=google-cloud-iap-v1beta1",
-        "ruby-cloud-env-prefix=IAP",
-        "ruby-cloud-product-url=https://cloud.google.com/iap/",
         "ruby-cloud-api-id=iap.googleapis.com",
         "ruby-cloud-api-shortname=iap",
+        "ruby-cloud-env-prefix=IAP",
+        "ruby-cloud-gem-name=google-cloud-iap-v1beta1",
+        "ruby-cloud-product-url=https://cloud.google.com/iap/",
     ],
     grpc_service_config = "iap_grpc_service_config.json",
+    rest_numeric_enums = True,
     ruby_cloud_description = "IAP lets you establish a central authorization layer for applications accessed by HTTPS, so you can use an application-level access control model instead of relying on network-level firewalls.",
     ruby_cloud_title = "Identity-Aware Proxy V1beta1",
+    service_yaml = "iap_v1beta1.yaml",
     deps = [
         ":iap_ruby_grpc",
         ":iap_ruby_proto",
@@ -320,11 +354,13 @@ csharp_gapic_library(
     srcs = [":iap_proto_with_info"],
     common_resources_config = "@gax_dotnet//:Google.Api.Gax/ResourceNames/CommonResourcesConfig.json",
     grpc_service_config = "iap_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "iap_v1beta1.yaml",
     deps = [
         ":iap_csharp_grpc",
         ":iap_csharp_proto",
     ],
+    transport = "grpc+rest",
 )
 
 # Open Source Packages
@@ -340,4 +376,20 @@ csharp_gapic_assembly_pkg(
 ##############################################################################
 # C++
 ##############################################################################
-# Put your C++ rules here
+load(
+    "@com_google_googleapis_imports//:imports.bzl",
+    "cc_grpc_library",
+    "cc_proto_library",
+)
+
+cc_proto_library(
+    name = "iap_cc_proto",
+    deps = [":iap_proto"],
+)
+
+cc_grpc_library(
+    name = "iap_cc_grpc",
+    srcs = [":iap_proto"],
+    grpc_only = True,
+    deps = [":iap_cc_proto"],
+)

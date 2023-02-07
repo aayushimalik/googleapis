@@ -4,15 +4,18 @@ name: networkconnectivity.googleapis.com
 title: Network Connectivity API
 
 apis:
+- name: google.cloud.location.Locations
 - name: google.cloud.networkconnectivity.v1.HubService
+- name: google.iam.v1.IAMPolicy
+- name: google.longrunning.Operations
 
 types:
 - name: google.cloud.networkconnectivity.v1.LocationMetadata
 - name: google.cloud.networkconnectivity.v1.OperationMetadata
 
 documentation:
-  summary: The Network Connectivity API provides access to Network Connectivity Center.
-  overview: The Network Connectivity API provides access to Network Connectivity Center.
+  summary: This API enables connectivity with and between Google Cloud resources.
+  overview: This API enables connectivity with and between Google Cloud resources.
   rules:
   - selector: google.cloud.location.Locations.GetLocation
     description: Gets information about a location.

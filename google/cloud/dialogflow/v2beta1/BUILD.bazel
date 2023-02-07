@@ -64,6 +64,7 @@ proto_library_with_info(
     deps = [
         ":dialogflow_proto",
         "//google/cloud:common_resources_proto",
+        "//google/cloud/location:location_proto",
     ],
 )
 
@@ -95,33 +96,52 @@ java_gapic_library(
     srcs = [":dialogflow_proto_with_info"],
     gapic_yaml = None,
     grpc_service_config = "dialogflow_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "dialogflow_v2beta1.yaml",
     test_deps = [
         ":dialogflow_java_grpc",
+        "//google/cloud/location:location_java_grpc",
     ],
+    transport = "grpc+rest",
     deps = [
         ":dialogflow_java_proto",
         "//google/api:api_java_proto",
+        "//google/cloud/location:location_java_proto",
     ],
 )
 
 java_gapic_test(
     name = "dialogflow_java_gapic_test_suite",
     test_classes = [
+        "com.google.cloud.dialogflow.v2beta1.AgentsClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.AgentsClientTest",
+        "com.google.cloud.dialogflow.v2beta1.AnswerRecordsClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.AnswerRecordsClientTest",
+        "com.google.cloud.dialogflow.v2beta1.ContextsClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.ContextsClientTest",
+        "com.google.cloud.dialogflow.v2beta1.ConversationProfilesClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.ConversationProfilesClientTest",
+        "com.google.cloud.dialogflow.v2beta1.ConversationsClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.ConversationsClientTest",
+        "com.google.cloud.dialogflow.v2beta1.DocumentsClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.DocumentsClientTest",
+        "com.google.cloud.dialogflow.v2beta1.EntityTypesClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.EntityTypesClientTest",
+        "com.google.cloud.dialogflow.v2beta1.EnvironmentsClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.EnvironmentsClientTest",
+        "com.google.cloud.dialogflow.v2beta1.FulfillmentsClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.FulfillmentsClientTest",
+        "com.google.cloud.dialogflow.v2beta1.IntentsClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.IntentsClientTest",
+        "com.google.cloud.dialogflow.v2beta1.KnowledgeBasesClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.KnowledgeBasesClientTest",
+        "com.google.cloud.dialogflow.v2beta1.ParticipantsClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.ParticipantsClientTest",
+        "com.google.cloud.dialogflow.v2beta1.SessionEntityTypesClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.SessionEntityTypesClientTest",
+        "com.google.cloud.dialogflow.v2beta1.SessionsClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.SessionsClientTest",
+        "com.google.cloud.dialogflow.v2beta1.VersionsClientHttpJsonTest",
         "com.google.cloud.dialogflow.v2beta1.VersionsClientTest",
     ],
     runtime_deps = [":dialogflow_java_gapic_test"],
@@ -130,6 +150,8 @@ java_gapic_test(
 # Open Source Packages
 java_gapic_assembly_gradle_pkg(
     name = "google-cloud-dialogflow-v2beta1-java",
+    include_samples = True,
+    transport = "grpc+rest",
     deps = [
         ":dialogflow_java_gapic",
         ":dialogflow_java_grpc",
@@ -152,7 +174,7 @@ load(
 go_proto_library(
     name = "dialogflow_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "google.golang.org/genproto/googleapis/cloud/dialogflow/v2beta1",
+    importpath = "cloud.google.com/go/dialogflow/apiv2beta1/dialogflowpb",
     protos = [":dialogflow_proto"],
     deps = [
         "//google/api:annotations_go_proto",
@@ -167,13 +189,17 @@ go_gapic_library(
     srcs = [":dialogflow_proto_with_info"],
     grpc_service_config = "dialogflow_grpc_service_config.json",
     importpath = "cloud.google.com/go/dialogflow/apiv2beta1;dialogflow",
+    release_level = "beta",
     metadata = True,
+    rest_numeric_enums = True,
     service_yaml = "dialogflow_v2beta1.yaml",
+    transport = "grpc+rest",
     deps = [
         ":dialogflow_go_proto",
+        "//google/cloud/location:location_go_proto",
         "//google/longrunning:longrunning_go_proto",
-        "@com_google_cloud_go//longrunning:go_default_library",
-        "@com_google_cloud_go//longrunning/autogen:go_default_library",
+        "@com_google_cloud_go_longrunning//:go_default_library",
+        "@com_google_cloud_go_longrunning//autogen:go_default_library",
         "@io_bazel_rules_go//proto/wkt:duration_go_proto",
         "@io_bazel_rules_go//proto/wkt:struct_go_proto",
     ],
@@ -204,13 +230,28 @@ load(
     "@com_google_googleapis_imports//:imports.bzl",
     "py_gapic_assembly_pkg",
     "py_gapic_library",
+    "py_test",
 )
 
 py_gapic_library(
     name = "dialogflow_py_gapic",
     srcs = [":dialogflow_proto"],
     grpc_service_config = "dialogflow_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "dialogflow_v2beta1.yaml",
+    transport = "grpc",
+    deps = [
+    ],
+)
+
+py_test(
+    name = "dialogflow_py_gapic_test",
+    srcs = [
+        "dialogflow_py_gapic_pytest.py",
+        "dialogflow_py_gapic_test.py",
+    ],
+    legacy_create_init = False,
+    deps = [":dialogflow_py_gapic"],
 )
 
 # Open Source Packages
@@ -247,7 +288,9 @@ php_gapic_library(
     name = "dialogflow_php_gapic",
     srcs = [":dialogflow_proto_with_info"],
     grpc_service_config = "dialogflow_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "dialogflow_v2beta1.yaml",
+    transport = "grpc+rest",
     deps = [
         ":dialogflow_php_grpc",
         ":dialogflow_php_proto",
@@ -281,7 +324,9 @@ nodejs_gapic_library(
     grpc_service_config = "dialogflow_grpc_service_config.json",
     main_service = "dialogflow",
     package = "google.cloud.dialogflow.v2beta1",
+    rest_numeric_enums = True,
     service_yaml = "dialogflow_v2beta1.yaml",
+    transport = "grpc+rest",
     deps = [],
 )
 
@@ -326,8 +371,10 @@ ruby_cloud_gapic_library(
         "ruby-cloud-product-url=https://cloud.google.com/dialogflow",
     ],
     grpc_service_config = "dialogflow_grpc_service_config.json",
+    rest_numeric_enums = True,
     ruby_cloud_description = "Dialogflow is an end-to-end, build-once deploy-everywhere development suite for creating conversational interfaces for websites, mobile applications, popular messaging platforms, and IoT devices. You can use it to build interfaces (such as chatbots and conversational IVR) that enable natural and rich interactions between your users and your business. This client is for Dialogflow ES, providing the standard agent type suitable for small and simple agents.",
     ruby_cloud_title = "Dialogflow V2beta1",
+    service_yaml = "dialogflow_v2beta1.yaml",
     deps = [
         ":dialogflow_ruby_grpc",
         ":dialogflow_ruby_proto",
@@ -371,11 +418,13 @@ csharp_gapic_library(
     srcs = [":dialogflow_proto_with_info"],
     common_resources_config = "@gax_dotnet//:Google.Api.Gax/ResourceNames/CommonResourcesConfig.json",
     grpc_service_config = "dialogflow_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "dialogflow_v2beta1.yaml",
     deps = [
         ":dialogflow_csharp_grpc",
         ":dialogflow_csharp_proto",
     ],
+    transport = "grpc+rest",
 )
 
 # Open Source Packages

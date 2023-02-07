@@ -26,7 +26,7 @@ import "google/protobuf/timestamp.proto";
 import "google/rpc/status.proto";
 
 option csharp_namespace = "Google.Cloud.GkeHub.V1Beta1";
-option go_package = "google.golang.org/genproto/googleapis/cloud/gkehub/v1beta1;gkehub";
+option go_package = "cloud.google.com/go/gkehub/apiv1beta1/gkehubpb;gkehubpb";
 option java_multiple_files = true;
 option java_package = "com.google.cloud.gkehub.v1beta1";
 option php_namespace = "Google\\Cloud\\GkeHub\\V1beta1";
@@ -359,6 +359,24 @@ message GkeCluster {
 
 // OnPremCluster contains information specific to GKE On-Prem clusters.
 message OnPremCluster {
+  // ClusterType describes on prem cluster's type.
+  enum ClusterType {
+    // The ClusterType is not set.
+    CLUSTERTYPE_UNSPECIFIED = 0;
+
+    // The ClusterType is bootstrap cluster.
+    BOOTSTRAP = 1;
+
+    // The ClusterType is baremetal hybrid cluster.
+    HYBRID = 2;
+
+    // The ClusterType is baremetal standalone cluster.
+    STANDALONE = 3;
+
+    // The ClusterType is user cluster.
+    USER = 4;
+  }
+
   // Immutable. Self-link of the GCP resource for the GKE On-Prem cluster. For example:
   //
   //  //gkeonprem.googleapis.com/projects/my-project/locations/us-west1-a/vmwareClusters/my-cluster
@@ -372,6 +390,9 @@ message OnPremCluster {
 
   // Immutable. Whether the cluster is an admin cluster.
   bool admin_cluster = 3 [(google.api.field_behavior) = IMMUTABLE];
+
+  // Immutable. The on prem cluster's type.
+  ClusterType cluster_type = 4 [(google.api.field_behavior) = IMMUTABLE];
 }
 
 // MultiCloudCluster contains information specific to GKE Multi-Cloud clusters.

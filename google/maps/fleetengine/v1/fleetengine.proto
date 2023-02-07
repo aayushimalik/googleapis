@@ -74,11 +74,14 @@ message TripWaypoint {
   // The role this waypoint plays in this trip, such as pickup or dropoff.
   WaypointType waypoint_type = 3;
 
-  // The path from the previous waypoint to the current waypoint.
+  // The path from the previous waypoint to the current waypoint.  Undefined for
+  // the first waypoint in a list. This field is only populated when requested.
   repeated google.type.LatLng path_to_waypoint = 4;
 
   // The encoded path from the previous waypoint to the current waypoint.
-  // Decoding is not yet supported.
+  //
+  // <p>Note: This field is intended only for use by the Driver SDK and Consumer
+  // SDK. Decoding is not yet supported.
   string encoded_path_to_waypoint = 5;
 
   // The traffic conditions along the path to this waypoint.  Note that traffic
@@ -86,19 +89,16 @@ message TripWaypoint {
   // customers.
   ConsumableTrafficPolyline traffic_to_waypoint = 10;
 
-  // The path distance from the previous waypoint to the current waypoint. If
-  // the waypoint is the first waypoint in the list (e.g.,
-  // `Vehicle.waypoints[0]` or `Trip.remaining_waypoints[0]`), then the value of
-  // this field is undefined.
+  // The path distance from the previous waypoint to the current waypoint.
+  // Undefined for the first waypoint in a list.
   google.protobuf.Int32Value distance_meters = 6;
 
-  // The estimated time of arrival at this waypoint.
+  // The estimated time of arrival at this waypoint. Undefined for the first
+  // waypoint in a list.
   google.protobuf.Timestamp eta = 7;
 
-  // The travel time from previous waypoint to this point. If the waypoint is
-  // the first waypoint in the list (e.g., `Vehicle.waypoints[0]` or
-  // `Trip.remaining_waypoints[0]`), then this value indicates the remaining
-  // time to the waypoint.
+  // The travel time from previous waypoint to this point. Undefined for the
+  // first waypoint in a list.
   google.protobuf.Duration duration = 8;
 }
 
@@ -215,11 +215,13 @@ message VehicleLocation {
   // Accuracy of `speed` in meters/second.
   google.protobuf.DoubleValue speed_accuracy = 7;
 
-  // The time when `location` was reported by the sensor.
+  // The time when `location` was reported by the sensor according to the
+  // sensor's clock.
   google.protobuf.Timestamp update_time = 4;
 
   // Output only. The time when the server received the location information.
-  google.protobuf.Timestamp server_time = 13 [(google.api.field_behavior) = OUTPUT_ONLY];
+  google.protobuf.Timestamp server_time = 13
+      [(google.api.field_behavior) = OUTPUT_ONLY];
 
   // Provider of location data (for example, `GPS`).
   LocationSensor location_sensor = 11;
@@ -227,42 +229,52 @@ message VehicleLocation {
   // Whether `location` is snapped to a road.
   google.protobuf.BoolValue is_road_snapped = 27;
 
-  // Input only. Indicates whether the GPS sensor is enabled on the mobile device.
-  google.protobuf.BoolValue is_gps_sensor_enabled = 12 [(google.api.field_behavior) = INPUT_ONLY];
+  // Input only. Indicates whether the GPS sensor is enabled on the mobile
+  // device.
+  google.protobuf.BoolValue is_gps_sensor_enabled = 12
+      [(google.api.field_behavior) = INPUT_ONLY];
 
-  // Input only. Time (in seconds) since this location was first sent to the server.
-  // This will be zero for the first update. If the time is unknown
-  // (for example, when the app restarts), this value resets to zero.
-  google.protobuf.Int32Value time_since_update = 14 [(google.api.field_behavior) = INPUT_ONLY];
+  // Input only. Time (in seconds) since this location was first sent to the
+  // server. This will be zero for the first update. If the time is unknown (for
+  // example, when the app restarts), this value resets to zero.
+  google.protobuf.Int32Value time_since_update = 14
+      [(google.api.field_behavior) = INPUT_ONLY];
 
-  // Input only. Number of additional attempts to send this location to the server.
-  // If this value is zero, then it is not stale.
-  google.protobuf.Int32Value num_stale_updates = 15 [(google.api.field_behavior) = INPUT_ONLY];
+  // Input only. Number of additional attempts to send this location to the
+  // server. If this value is zero, then it is not stale.
+  google.protobuf.Int32Value num_stale_updates = 15
+      [(google.api.field_behavior) = INPUT_ONLY];
 
   // Raw vehicle location (unprocessed by road-snapper).
   google.type.LatLng raw_location = 16;
 
   // Input only. Timestamp associated with the raw location.
-  google.protobuf.Timestamp raw_location_time = 17 [(google.api.field_behavior) = INPUT_ONLY];
+  google.protobuf.Timestamp raw_location_time = 17
+      [(google.api.field_behavior) = INPUT_ONLY];
 
   // Input only. Source of the raw location.
-  LocationSensor raw_location_sensor = 28 [(google.api.field_behavior) = INPUT_ONLY];
+  LocationSensor raw_location_sensor = 28
+      [(google.api.field_behavior) = INPUT_ONLY];
 
   // Input only. Accuracy of `raw_location` as a radius, in meters.
-  google.protobuf.DoubleValue raw_location_accuracy = 25 [(google.api.field_behavior) = INPUT_ONLY];
+  google.protobuf.DoubleValue raw_location_accuracy = 25
+      [(google.api.field_behavior) = INPUT_ONLY];
 
-  // Input only. Supplemental location provided by the integrating app, such as the location
-  // provided by Fused Location Provider.
-  google.type.LatLng supplemental_location = 18 [(google.api.field_behavior) = INPUT_ONLY];
+  // Input only. Supplemental location provided by the integrating app.
+  google.type.LatLng supplemental_location = 18
+      [(google.api.field_behavior) = INPUT_ONLY];
 
   // Input only. Timestamp associated with the supplemental location.
-  google.protobuf.Timestamp supplemental_location_time = 19 [(google.api.field_behavior) = INPUT_ONLY];
+  google.protobuf.Timestamp supplemental_location_time = 19
+      [(google.api.field_behavior) = INPUT_ONLY];
 
   // Input only. Source of the supplemental location.
-  LocationSensor supplemental_location_sensor = 20 [(google.api.field_behavior) = INPUT_ONLY];
+  LocationSensor supplemental_location_sensor = 20
+      [(google.api.field_behavior) = INPUT_ONLY];
 
   // Input only. Accuracy of `supplemental_location` as a radius, in meters.
-  google.protobuf.DoubleValue supplemental_location_accuracy = 21 [(google.api.field_behavior) = INPUT_ONLY];
+  google.protobuf.DoubleValue supplemental_location_accuracy = 21
+      [(google.api.field_behavior) = INPUT_ONLY];
 
   // Deprecated: Use `is_road_snapped` instead.
   bool road_snapped = 26 [deprecated = true];
@@ -287,4 +299,7 @@ enum LocationSensor {
 
   // The fused location provider in Google Play services.
   FUSED_LOCATION_PROVIDER = 100;
+
+  // The location provider on Apple operating systems.
+  CORE_LOCATION = 200;
 }

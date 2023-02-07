@@ -72,12 +72,14 @@ java_gapic_library(
     srcs = [":dataform_proto_with_info"],
     gapic_yaml = None,
     grpc_service_config = "dataform_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "dataform_v1alpha2.yaml",
     test_deps = [
         ":dataform_java_grpc",
         "//google/cloud/location:location_java_grpc",
         "//google/iam/v1:iam_java_grpc",
     ],
+    transport = "grpc+rest",
     deps = [
         ":dataform_java_proto",
         "//google/api:api_java_proto",
@@ -89,6 +91,7 @@ java_gapic_library(
 java_gapic_test(
     name = "dataform_java_gapic_test_suite",
     test_classes = [
+        "com.google.cloud.dataform.v1alpha2.DataformClientHttpJsonTest",
         "com.google.cloud.dataform.v1alpha2.DataformClientTest",
     ],
     runtime_deps = [":dataform_java_gapic_test"],
@@ -97,6 +100,8 @@ java_gapic_test(
 # Open Source Packages
 java_gapic_assembly_gradle_pkg(
     name = "google-cloud-dataform-v1alpha2-java",
+    include_samples = True,
+    transport = "grpc+rest",
     deps = [
         ":dataform_java_gapic",
         ":dataform_java_grpc",
@@ -119,7 +124,7 @@ load(
 go_proto_library(
     name = "dataform_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "google.golang.org/genproto/googleapis/cloud/dataform/v1alpha2",
+    importpath = "cloud.google.com/go/dataform/apiv1alpha2/dataformpb",
     protos = [":dataform_proto"],
     deps = [
         "//google/api:annotations_go_proto",
@@ -132,8 +137,11 @@ go_gapic_library(
     srcs = [":dataform_proto_with_info"],
     grpc_service_config = "dataform_grpc_service_config.json",
     importpath = "cloud.google.com/go/dataform/apiv1alpha2;dataform",
+    release_level = "alpha",
     metadata = True,
+    rest_numeric_enums = True,
     service_yaml = "dataform_v1alpha2.yaml",
+    transport = "grpc+rest",
     deps = [
         ":dataform_go_proto",
         "//google/cloud/location:location_go_proto",
@@ -172,7 +180,22 @@ py_gapic_library(
     name = "dataform_py_gapic",
     srcs = [":dataform_proto"],
     grpc_service_config = "dataform_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "dataform_v1alpha2.yaml",
+    transport = "grpc",
+    deps = [
+        "//google/iam/v1:iam_policy_py_proto",
+    ],
+)
+
+py_test(
+    name = "dataform_py_gapic_test",
+    srcs = [
+        "dataform_py_gapic_pytest.py",
+        "dataform_py_gapic_test.py",
+    ],
+    legacy_create_init = False,
+    deps = [":dataform_py_gapic"],
 )
 
 # Open Source Packages
@@ -209,7 +232,9 @@ php_gapic_library(
     name = "dataform_php_gapic",
     srcs = [":dataform_proto_with_info"],
     grpc_service_config = "dataform_grpc_service_config.json",
+    rest_numeric_enums = True,
     service_yaml = "dataform_v1alpha2.yaml",
+    transport = "grpc+rest",
     deps = [
         ":dataform_php_grpc",
         ":dataform_php_proto",
@@ -242,7 +267,9 @@ nodejs_gapic_library(
     extra_protoc_parameters = ["metadata"],
     grpc_service_config = "dataform_grpc_service_config.json",
     package = "google.cloud.dataform.v1alpha2",
+    rest_numeric_enums = True,
     service_yaml = "dataform_v1alpha2.yaml",
+    transport = "grpc+rest",
     deps = [],
 )
 
@@ -279,10 +306,10 @@ ruby_grpc_library(
 ruby_cloud_gapic_library(
     name = "dataform_ruby_gapic",
     srcs = [":dataform_proto_with_info"],
-    extra_protoc_parameters = [
-        "ruby-cloud-gem-name=google-cloud-dataform-v1alpha2",
-    ],
+    extra_protoc_parameters = ["ruby-cloud-gem-name=google-cloud-dataform-v1alpha2"],
     grpc_service_config = "dataform_grpc_service_config.json",
+    rest_numeric_enums = True,
+    service_yaml = "dataform_v1alpha2.yaml",
     deps = [
         ":dataform_ruby_grpc",
         ":dataform_ruby_proto",
@@ -296,6 +323,52 @@ ruby_gapic_assembly_pkg(
         ":dataform_ruby_gapic",
         ":dataform_ruby_grpc",
         ":dataform_ruby_proto",
+    ],
+)
+
+##############################################################################
+# C#
+##############################################################################
+load(
+    "@com_google_googleapis_imports//:imports.bzl",
+    "csharp_gapic_assembly_pkg",
+    "csharp_gapic_library",
+    "csharp_grpc_library",
+    "csharp_proto_library",
+)
+
+csharp_proto_library(
+    name = "dataform_csharp_proto",
+    deps = [":dataform_proto"],
+)
+
+csharp_grpc_library(
+    name = "dataform_csharp_grpc",
+    srcs = [":dataform_proto"],
+    deps = [":dataform_csharp_proto"],
+)
+
+csharp_gapic_library(
+    name = "dataform_csharp_gapic",
+    srcs = [":dataform_proto_with_info"],
+    common_resources_config = "@gax_dotnet//:Google.Api.Gax/ResourceNames/CommonResourcesConfig.json",
+    grpc_service_config = "dataform_grpc_service_config.json",
+    rest_numeric_enums = True,
+    service_yaml = "dataform_v1alpha2.yaml",
+    deps = [
+        ":dataform_csharp_grpc",
+        ":dataform_csharp_proto",
+    ],
+    transport = "grpc+rest",
+)
+
+# Open Source Packages
+csharp_gapic_assembly_pkg(
+    name = "google-cloud-dataform-v1alpha2-csharp",
+    deps = [
+        ":dataform_csharp_gapic",
+        ":dataform_csharp_grpc",
+        ":dataform_csharp_proto",
     ],
 )
 

@@ -5,6 +5,7 @@ title: Vertex AI API
 
 apis:
 - name: google.cloud.aiplatform.v1beta1.DatasetService
+- name: google.cloud.aiplatform.v1beta1.DeploymentResourcePoolService
 - name: google.cloud.aiplatform.v1beta1.EndpointService
 - name: google.cloud.aiplatform.v1beta1.FeaturestoreOnlineServingService
 - name: google.cloud.aiplatform.v1beta1.FeaturestoreService
@@ -19,6 +20,9 @@ apis:
 - name: google.cloud.aiplatform.v1beta1.SpecialistPoolService
 - name: google.cloud.aiplatform.v1beta1.TensorboardService
 - name: google.cloud.aiplatform.v1beta1.VizierService
+- name: google.cloud.location.Locations
+- name: google.iam.v1.IAMPolicy
+- name: google.longrunning.Operations
 
 types:
 - name: google.cloud.aiplatform.v1beta1.BatchCreateFeaturesOperationMetadata
@@ -29,7 +33,10 @@ types:
 - name: google.cloud.aiplatform.v1beta1.BatchReadFeatureValuesResponse
 - name: google.cloud.aiplatform.v1beta1.CheckTrialEarlyStoppingStateMetatdata
 - name: google.cloud.aiplatform.v1beta1.CheckTrialEarlyStoppingStateResponse
+- name: google.cloud.aiplatform.v1beta1.CopyModelOperationMetadata
+- name: google.cloud.aiplatform.v1beta1.CopyModelResponse
 - name: google.cloud.aiplatform.v1beta1.CreateDatasetOperationMetadata
+- name: google.cloud.aiplatform.v1beta1.CreateDeploymentResourcePoolOperationMetadata
 - name: google.cloud.aiplatform.v1beta1.CreateEndpointOperationMetadata
 - name: google.cloud.aiplatform.v1beta1.CreateEntityTypeOperationMetadata
 - name: google.cloud.aiplatform.v1beta1.CreateFeatureOperationMetadata
@@ -39,6 +46,8 @@ types:
 - name: google.cloud.aiplatform.v1beta1.CreateMetadataStoreOperationMetadata
 - name: google.cloud.aiplatform.v1beta1.CreateSpecialistPoolOperationMetadata
 - name: google.cloud.aiplatform.v1beta1.CreateTensorboardOperationMetadata
+- name: google.cloud.aiplatform.v1beta1.DeleteFeatureValuesOperationMetadata
+- name: google.cloud.aiplatform.v1beta1.DeleteFeatureValuesResponse
 - name: google.cloud.aiplatform.v1beta1.DeleteMetadataStoreOperationMetadata
 - name: google.cloud.aiplatform.v1beta1.DeleteOperationMetadata
 - name: google.cloud.aiplatform.v1beta1.DeployIndexOperationMetadata
@@ -70,6 +79,7 @@ types:
 - name: google.cloud.aiplatform.v1beta1.UndeployIndexResponse
 - name: google.cloud.aiplatform.v1beta1.UndeployModelOperationMetadata
 - name: google.cloud.aiplatform.v1beta1.UndeployModelResponse
+- name: google.cloud.aiplatform.v1beta1.UpdateDeploymentResourcePoolOperationMetadata
 - name: google.cloud.aiplatform.v1beta1.UpdateExplanationDatasetOperationMetadata
 - name: google.cloud.aiplatform.v1beta1.UpdateExplanationDatasetResponse
 - name: google.cloud.aiplatform.v1beta1.UpdateFeaturestoreOperationMetadata
@@ -121,11 +131,11 @@ backend:
   rules:
   - selector: 'google.cloud.aiplatform.v1beta1.DatasetService.*'
     deadline: 60.0
+  - selector: 'google.cloud.aiplatform.v1beta1.DeploymentResourcePoolService.*'
+    deadline: 30.0
   - selector: 'google.cloud.aiplatform.v1beta1.EndpointService.*'
     deadline: 60.0
-  - selector: google.cloud.aiplatform.v1beta1.FeaturestoreOnlineServingService.ReadFeatureValues
-    deadline: 60.0
-  - selector: google.cloud.aiplatform.v1beta1.FeaturestoreOnlineServingService.StreamingReadFeatureValues
+  - selector: 'google.cloud.aiplatform.v1beta1.FeaturestoreOnlineServingService.*'
     deadline: 60.0
   - selector: 'google.cloud.aiplatform.v1beta1.FeaturestoreService.*'
     deadline: 60.0
@@ -249,10 +259,12 @@ http:
     - post: '/v1beta1/{name=projects/*/locations/*/migratableResources/*/operations/*}:cancel'
     - post: '/v1beta1/{name=projects/*/locations/*/models/*/operations/*}:cancel'
     - post: '/v1beta1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:cancel'
+    - post: '/v1beta1/{name=projects/*/locations/*/persistentResources/*/operations/*}:cancel'
     - post: '/v1beta1/{name=projects/*/locations/*/studies/*/operations/*}:cancel'
     - post: '/v1beta1/{name=projects/*/locations/*/studies/*/trials/*/operations/*}:cancel'
     - post: '/v1beta1/{name=projects/*/locations/*/trainingPipelines/*/operations/*}:cancel'
     - post: '/v1beta1/{name=projects/*/locations/*/pipelineJobs/*/operations/*}:cancel'
+    - post: '/v1beta1/{name=projects/*/locations/*/schedules/*/operations/*}:cancel'
     - post: '/v1beta1/{name=projects/*/locations/*/specialistPools/*/operations/*}:cancel'
     - post: '/v1beta1/{name=projects/*/locations/*/tensorboards/*/operations/*}:cancel'
     - post: '/v1beta1/{name=projects/*/locations/*/tensorboards/*/experiments/*/operations/*}:cancel'
@@ -311,10 +323,12 @@ http:
     - delete: '/v1beta1/{name=projects/*/locations/*/migratableResources/*/operations/*}'
     - delete: '/v1beta1/{name=projects/*/locations/*/models/*/operations/*}'
     - delete: '/v1beta1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}'
+    - delete: '/v1beta1/{name=projects/*/locations/*/persistentResources/*/operations/*}'
     - delete: '/v1beta1/{name=projects/*/locations/*/studies/*/operations/*}'
     - delete: '/v1beta1/{name=projects/*/locations/*/studies/*/trials/*/operations/*}'
     - delete: '/v1beta1/{name=projects/*/locations/*/trainingPipelines/*/operations/*}'
     - delete: '/v1beta1/{name=projects/*/locations/*/pipelineJobs/*/operations/*}'
+    - delete: '/v1beta1/{name=projects/*/locations/*/schedules/*/operations/*}'
     - delete: '/v1beta1/{name=projects/*/locations/*/specialistPools/*/operations/*}'
     - delete: '/v1beta1/{name=projects/*/locations/*/tensorboards/*/operations/*}'
     - delete: '/v1beta1/{name=projects/*/locations/*/tensorboards/*/experiments/*/operations/*}'
@@ -374,10 +388,12 @@ http:
     - get: '/v1beta1/{name=projects/*/locations/*/migratableResources/*/operations/*}'
     - get: '/v1beta1/{name=projects/*/locations/*/models/*/operations/*}'
     - get: '/v1beta1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}'
+    - get: '/v1beta1/{name=projects/*/locations/*/persistentResources/*/operations/*}'
     - get: '/v1beta1/{name=projects/*/locations/*/studies/*/operations/*}'
     - get: '/v1beta1/{name=projects/*/locations/*/studies/*/trials/*/operations/*}'
     - get: '/v1beta1/{name=projects/*/locations/*/trainingPipelines/*/operations/*}'
     - get: '/v1beta1/{name=projects/*/locations/*/pipelineJobs/*/operations/*}'
+    - get: '/v1beta1/{name=projects/*/locations/*/schedules/*/operations/*}'
     - get: '/v1beta1/{name=projects/*/locations/*/specialistPools/*/operations/*}'
     - get: '/v1beta1/{name=projects/*/locations/*/tensorboards/*/operations/*}'
     - get: '/v1beta1/{name=projects/*/locations/*/tensorboards/*/experiments/*/operations/*}'
@@ -436,10 +452,12 @@ http:
     - get: '/v1beta1/{name=projects/*/locations/*/migratableResources/*}/operations'
     - get: '/v1beta1/{name=projects/*/locations/*/models/*}/operations'
     - get: '/v1beta1/{name=projects/*/locations/*/models/*/evaluations/*}/operations'
+    - get: '/v1beta1/{name=projects/*/locations/*/persistentResources/*}/operations'
     - get: '/v1beta1/{name=projects/*/locations/*/studies/*}/operations'
     - get: '/v1beta1/{name=projects/*/locations/*/studies/*/trials/*}/operations'
     - get: '/v1beta1/{name=projects/*/locations/*/trainingPipelines/*}/operations'
     - get: '/v1beta1/{name=projects/*/locations/*/pipelineJobs/*}/operations'
+    - get: '/v1beta1/{name=projects/*/locations/*/schedules/*}/operations'
     - get: '/v1beta1/{name=projects/*/locations/*/specialistPools/*}/operations'
     - get: '/v1beta1/{name=projects/*/locations/*/tensorboards/*}/operations'
     - get: '/v1beta1/{name=projects/*/locations/*/tensorboards/*/experiments/*}/operations'
@@ -498,10 +516,12 @@ http:
     - post: '/v1beta1/{name=projects/*/locations/*/migratableResources/*/operations/*}:wait'
     - post: '/v1beta1/{name=projects/*/locations/*/models/*/operations/*}:wait'
     - post: '/v1beta1/{name=projects/*/locations/*/models/*/evaluations/*/operations/*}:wait'
+    - post: '/v1beta1/{name=projects/*/locations/*/persistentResources/*/operations/*}:wait'
     - post: '/v1beta1/{name=projects/*/locations/*/studies/*/operations/*}:wait'
     - post: '/v1beta1/{name=projects/*/locations/*/studies/*/trials/*/operations/*}:wait'
     - post: '/v1beta1/{name=projects/*/locations/*/trainingPipelines/*/operations/*}:wait'
     - post: '/v1beta1/{name=projects/*/locations/*/pipelineJobs/*/operations/*}:wait'
+    - post: '/v1beta1/{name=projects/*/locations/*/schedules/*/operations/*}:wait'
     - post: '/v1beta1/{name=projects/*/locations/*/specialistPools/*/operations/*}:wait'
     - post: '/v1beta1/{name=projects/*/locations/*/tensorboards/*/operations/*}:wait'
     - post: '/v1beta1/{name=projects/*/locations/*/tensorboards/*/experiments/*/operations/*}:wait'
@@ -514,15 +534,15 @@ authentication:
     oauth:
       canonical_scopes: |-
         https://www.googleapis.com/auth/cloud-platform
+  - selector: 'google.cloud.aiplatform.v1beta1.DeploymentResourcePoolService.*'
+    oauth:
+      canonical_scopes: |-
+        https://www.googleapis.com/auth/cloud-platform
   - selector: 'google.cloud.aiplatform.v1beta1.EndpointService.*'
     oauth:
       canonical_scopes: |-
         https://www.googleapis.com/auth/cloud-platform
-  - selector: google.cloud.aiplatform.v1beta1.FeaturestoreOnlineServingService.ReadFeatureValues
-    oauth:
-      canonical_scopes: |-
-        https://www.googleapis.com/auth/cloud-platform
-  - selector: google.cloud.aiplatform.v1beta1.FeaturestoreOnlineServingService.StreamingReadFeatureValues
+  - selector: 'google.cloud.aiplatform.v1beta1.FeaturestoreOnlineServingService.*'
     oauth:
       canonical_scopes: |-
         https://www.googleapis.com/auth/cloud-platform
@@ -542,6 +562,11 @@ authentication:
     oauth:
       canonical_scopes: |-
         https://www.googleapis.com/auth/cloud-platform
+  - selector: google.cloud.aiplatform.v1beta1.JobService.GetNasJob
+    oauth:
+      canonical_scopes: |-
+        https://www.googleapis.com/auth/cloud-platform,
+        https://www.googleapis.com/auth/cloud-platform.read-only
   - selector: 'google.cloud.aiplatform.v1beta1.MetadataService.*'
     oauth:
       canonical_scopes: |-
